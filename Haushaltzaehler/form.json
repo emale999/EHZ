@@ -1,0 +1,12 @@
+{
+  "elements":
+  [
+	{ "type": "Label", "label": "Auswahl der Datenschnittstelle" },
+	{ "type": "Select", "name": "Gateway", "caption": "Schnittstelle:",
+            "options": [
+                { "label": "Client Socket", "value": 0 },
+                { "label": "Serial Port", "value": 1 }
+			]
+	}
+  ]
+}
