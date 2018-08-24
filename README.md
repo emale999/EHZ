@@ -1,3 +1,5 @@
+[![StyleCI](https://github.styleci.io/repos/145919264/shield?branch=master)](https://github.styleci.io/repos/145919264)
+
 # IPS EHZ
 Modul IPS EHZ(Elektronische Haushaltzähler)
 
@@ -29,4 +31,3 @@ Nutzung:
 Das Modul ist für die private Nutzung der Community gedacht!
 
 Für alles andere, würde ich bitten anzufragen.
-
