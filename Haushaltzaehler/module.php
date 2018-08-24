@@ -176,7 +176,7 @@ class Haushaltzaehler extends IPSModule
 
 		return $hex;
 	}
-=======
+
     public function __construct($InstanceID)
     {
         //Never delete this line!
