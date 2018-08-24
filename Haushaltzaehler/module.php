@@ -3,7 +3,7 @@
 
 class Haushaltzaehler extends IPSModule
 {
-<<<<<<< HEAD
+
 	public function __construct($InstanceID)
 	{
 		//Never delete this line!
@@ -349,5 +349,4 @@ class Haushaltzaehler extends IPSModule
 
         return $hex;
     }
->>>>>>> dedd689dcd1b772b9901c18ba7db596d5035e8e6
 }
