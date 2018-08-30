@@ -1,6 +1,8 @@
 {
   "elements":
   [
+  { "type": "Label", "label": "Aktualisierungszeit der Variablen in Sekunden" },
+  { "type": "NumberSpinner", "name": "Zeit", "caption": "Sekunden", "suffix": "" },
 	{ "type": "Label", "label": "Auswahl der Datenschnittstelle" },
 	{ "type": "Select", "name": "Gateway", "caption": "Schnittstelle:",
             "options": [
