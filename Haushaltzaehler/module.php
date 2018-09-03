@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 class Haushaltzaehler extends IPSModule
 {
@@ -53,7 +54,7 @@ class Haushaltzaehler extends IPSModule
     {
         $data = json_decode($JSONString);
         $bufferdata = $this->GetBuffer('Buffer');
-        $data = $bufferdata.utf8_decode($data->Buffer);
+        $data = $bufferdata . utf8_decode($data->Buffer);
 
         if (strpos($data, "\x1B\x1B\x1B\x1B\x01\x01\x01\x01") === false) {
             $this->SetBuffer('Buffer', $data);
