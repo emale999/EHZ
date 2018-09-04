@@ -54,8 +54,9 @@ class Haushaltzaehler extends IPSModule
             SetValue($this->GetIDForIdent($Ident), $Value);
         }
     }
-	/*
-	//Add this Polyfill for IP-Symcon 4.4 and older
+
+    /*
+    //Add this Polyfill for IP-Symcon 4.4 and older
     protected function GetValue($Ident)
     {
         if (IPS_GetKernelVersion() >= 5) {
@@ -69,7 +70,7 @@ class Haushaltzaehler extends IPSModule
     {
         $data = json_decode($JSONString);
         $bufferdata = $this->GetBuffer('Buffer');
-        $data = $bufferdata . utf8_decode($data->Buffer);
+        $data = $bufferdata.utf8_decode($data->Buffer);
 
         if (strpos($data, "\x1B\x1B\x1B\x1B\x01\x01\x01\x01") === false) {
             $this->SetBuffer('Buffer', $data);
@@ -91,39 +92,36 @@ class Haushaltzaehler extends IPSModule
         if (strripos($packet, "\x1B\x1B\x1B\x1B") !== false) {
             $packet = stristr($packet, "\x01\x01\x01\x63", true);
             $this->SendDebug('Receive Paket', $packet, 1);
-			$this->setInformation($packet);
+            $this->setInformation($packet);
             $this->setSml($packet);
         }
     }
 
-	private function setInformation($dataSml)
-	{
-		if(strpos($dataSml, "\x81\x81\xC7\x82\x03\xFF") !== false) {
+    private function setInformation($dataSml)
+    {
+        if (strpos($dataSml, "\x81\x81\xC7\x82\x03\xFF") !== false) {
+            $herstellerID = stristr($dataSml, "\x81\x81\xC7\x82\x03\xFF");
+            $this->SetVariableString('Hersteller', 'Hersteller', '', substr($herstellerID, 11, 3));
+        }
 
-			$herstellerID = stristr($dataSml, "\x81\x81\xC7\x82\x03\xFF");
-			$this->SetVariableString("Hersteller", "Hersteller", "", substr($herstellerID, 11, 3));
-		}
+        if (strpos($dataSml, "\x01\x00\x00\x00\x09\xFF") !== false) {
+            $serverID = stristr($dataSml, "\x01\x00\x00\x00\x09\xFF");
+            $this->SetVariableString('Server', 'ServerID', '', $this->Str2Hex(substr($serverID, 11, 10)));
+        }
 
-		if(strpos($dataSml, "\x01\x00\x00\x00\x09\xFF") !== false) {
+        if (strpos($dataSml, "\x01\x00\x60\x01\x00\xFF") !== false) {
 
-			$serverID = stristr($dataSml, "\x01\x00\x00\x00\x09\xFF");
-			$this->SetVariableString("Server", "ServerID", "", $this->Str2Hex(substr($serverID, 11, 10)));
-		}
+            // DZG noch unklar! Ident irgendwas setzt erst mal den Hersteller.
+            $ID = stristr($dataSml, "\x01\x00\x60\x01\x00\xFF");
+            $this->SetVariableString('Hersteller', 'Hersteller', '', substr($ID, 19, 3));
+        }
 
-		if(strpos($dataSml, "\x01\x00\x60\x01\x00\xFF") !== false) {
-
-			// DZG noch unklar! Ident irgendwas setzt erst mal den Hersteller.
-			$ID = stristr($dataSml, "\x01\x00\x60\x01\x00\xFF");
-			$this->SetVariableString("Hersteller", "Hersteller", "", substr($ID, 19, 3));
-		}
-
-		if(strpos($dataSml, "\x81\x81\xC7\x82\x05\xFF") !== false) {
-
-			$keySplit = stristr($dataSml, "\x81\x81\xC7\x82\x05\xFF");
-			$key = $this->KeyData(substr($keySplit, 12));
-			$this->SetVariableString("PublicKey", "PublicKey", "", $key);
-		}
-	}
+        if (strpos($dataSml, "\x81\x81\xC7\x82\x05\xFF") !== false) {
+            $keySplit = stristr($dataSml, "\x81\x81\xC7\x82\x05\xFF");
+            $key = $this->KeyData(substr($keySplit, 12));
+            $this->SetVariableString('PublicKey', 'PublicKey', '', $key);
+        }
+    }
 
     private function setSml($dataSml)
     {
@@ -216,13 +214,13 @@ class Haushaltzaehler extends IPSModule
         }
     }
 
-	private function SetVariableString($ident, $name,  $profile, $value)
-	{
-		$this->RegisterVariableString($ident, $name, $profile);
-		if ($this->GetValue($ident) == '') {
-			$this->SetValue($ident, $value);
-		}
-	}
+    private function SetVariableString($ident, $name, $profile, $value)
+    {
+        $this->RegisterVariableString($ident, $name, $profile);
+        if ($this->GetValue($ident) == '') {
+            $this->SetValue($ident, $value);
+        }
+    }
 
     private function Str2Hex($daten)
     {
@@ -234,13 +232,15 @@ class Haushaltzaehler extends IPSModule
         return $hex;
     }
 
-	private function KeyData($data)
-	{
-		$key = '';
-		for ($i = 0; $i < strlen($data); $i++)
-		$key .= sprintf('%02X', ord($data[$i]));
-		$key = str_split($key, 4);
-		$key = implode($key, ' ');
-		return $key;
-	}
+    private function KeyData($data)
+    {
+        $key = '';
+        for ($i = 0; $i < strlen($data); $i++) {
+            $key .= sprintf('%02X', ord($data[$i]));
+        }
+        $key = str_split($key, 4);
+        $key = implode($key, ' ');
+
+        return $key;
+    }
 }
