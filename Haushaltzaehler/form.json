@@ -8,7 +8,7 @@
             "options": [
                 { "label": "Client Socket", "value": 0 },
                 { "label": "Serial Port", "value": 1 },
-				{ "label": "UDP Socket", "value": 2 },
+				        { "label": "UDP Socket", "value": 2 },
                 { "label": "Virtual Port", "value": 3 }
 			]
 	}
