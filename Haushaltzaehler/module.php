@@ -36,6 +36,12 @@ class Haushaltzaehler extends IPSModule
             case 1: //SerialPort
                 $this->ForceParent('{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}');
                 break;
+            case 2: //UDPSocket
+                $this->ForceParent('{82347F20-F541-41E1-AC5B-A636FD3AE2D8}');
+                break;
+            case 3: //Virtualport
+                $this->ForceParent('{6179ED6A-FC31-413C-BB8E-1204150CF376}');
+                break;
         }
     }
 
@@ -48,12 +54,22 @@ class Haushaltzaehler extends IPSModule
             SetValue($this->GetIDForIdent($Ident), $Value);
         }
     }
+	/*
+	//Add this Polyfill for IP-Symcon 4.4 and older
+    protected function GetValue($Ident)
+    {
+        if (IPS_GetKernelVersion() >= 5) {
+            parent::GetValue($Ident);
+        } else {
+            GetValue($this->GetIDForIdent($Ident));
+        }
+    }*/
 
     public function ReceiveData($JSONString)
     {
         $data = json_decode($JSONString);
         $bufferdata = $this->GetBuffer('Buffer');
-        $data = $bufferdata.utf8_decode($data->Buffer);
+        $data = $bufferdata . utf8_decode($data->Buffer);
 
         if (strpos($data, "\x1B\x1B\x1B\x1B\x01\x01\x01\x01") === false) {
             $this->SetBuffer('Buffer', $data);
@@ -75,9 +91,39 @@ class Haushaltzaehler extends IPSModule
         if (strripos($packet, "\x1B\x1B\x1B\x1B") !== false) {
             $packet = stristr($packet, "\x01\x01\x01\x63", true);
             $this->SendDebug('Receive Paket', $packet, 1);
+			$this->setInformation($packet);
             $this->setSml($packet);
         }
     }
+
+	private function setInformation($dataSml)
+	{
+		if(strpos($dataSml, "\x81\x81\xC7\x82\x03\xFF") !== false) {
+
+			$herstellerID = stristr($dataSml, "\x81\x81\xC7\x82\x03\xFF");
+			$this->SetVariableString("Hersteller", "Hersteller", "", substr($herstellerID, 11, 3));
+		}
+
+		if(strpos($dataSml, "\x01\x00\x00\x00\x09\xFF") !== false) {
+
+			$serverID = stristr($dataSml, "\x01\x00\x00\x00\x09\xFF");
+			$this->SetVariableString("Server", "ServerID", "", $this->Str2Hex(substr($serverID, 11, 10)));
+		}
+
+		if(strpos($dataSml, "\x01\x00\x60\x01\x00\xFF") !== false) {
+
+			// DZG noch unklar! Ident irgendwas setzt erst mal den Hersteller.
+			$ID = stristr($dataSml, "\x01\x00\x60\x01\x00\xFF");
+			$this->SetVariableString("Hersteller", "Hersteller", "", substr($ID, 19, 3));
+		}
+
+		if(strpos($dataSml, "\x81\x81\xC7\x82\x05\xFF") !== false) {
+
+			$keySplit = stristr($dataSml, "\x81\x81\xC7\x82\x05\xFF");
+			$key = $this->KeyData(substr($keySplit, 12));
+			$this->SetVariableString("PublicKey", "PublicKey", "", $key);
+		}
+	}
 
     private function setSml($dataSml)
     {
@@ -165,10 +211,18 @@ class Haushaltzaehler extends IPSModule
     {
         $this->RegisterVariableFloat($ident, $name, $profile);
         $varUpdated = IPS_GetVariableCompatibility($this->GetIDForIdent($ident));
-        if (microtime(true) - $varUpdated['VariableUpdated'] > $this->ReadPropertyInteger('Update')) {
+        if (microtime(true) - $varUpdated['VariableUpdated'] >= $this->ReadPropertyInteger('Update')) {
             $this->SetValue($ident, number_format($value, 0, ',', ''));
         }
     }
+
+	private function SetVariableString($ident, $name,  $profile, $value)
+	{
+		$this->RegisterVariableString($ident, $name, $profile);
+		if ($this->GetValue($ident) == '') {
+			$this->SetValue($ident, $value);
+		}
+	}
 
     private function Str2Hex($daten)
     {
@@ -179,4 +233,14 @@ class Haushaltzaehler extends IPSModule
 
         return $hex;
     }
+
+	private function KeyData($data)
+	{
+		$key = '';
+		for ($i = 0; $i < strlen($data); $i++)
+		$key .= sprintf('%02X', ord($data[$i]));
+		$key = str_split($key, 4);
+		$key = implode($key, ' ');
+		return $key;
+	}
 }
