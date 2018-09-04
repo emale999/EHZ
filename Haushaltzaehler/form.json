@@ -1,13 +1,15 @@
 {
   "elements":
   [
-  { "type": "Label", "label": "Aktualisierungszeit der Variablen in Sekunden" },
-  { "type": "NumberSpinner", "name": "Update", "caption": "Sekunden:", "suffix": "" },
+	{ "type": "Label", "label": "Aktualisierungszeit der Variablen in Sekunden" },
+	{ "type": "NumberSpinner", "name": "Update", "caption": "Sekunden:", "suffix": "" },
 	{ "type": "Label", "label": "Auswahl der Datenschnittstelle" },
 	{ "type": "Select", "name": "Gateway", "caption": "Schnittstelle:",
             "options": [
                 { "label": "Client Socket", "value": 0 },
-                { "label": "Serial Port", "value": 1 }
+                { "label": "Serial Port", "value": 1 },
+				{ "label": "UDP Socket", "value": 2 },
+                { "label": "Virtual Port", "value": 3 }
 			]
 	}
   ]
