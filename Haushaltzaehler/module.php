@@ -1,5 +1,6 @@
 <?php
 
+//declare(strict_types = 1);
 
 class Haushaltzaehler extends IPSModule
 {
@@ -156,9 +157,10 @@ class Haushaltzaehler extends IPSModule
                     $index = $this->Str2Hex(substr($indexPower, 2, 3));
                     $ident = hexdec($index);
                     $split = substr($powerData, 4, -2);
-
-                    if ($split != "\xFF\xFF") {
-                        $value = hexdec($this->Str2Hex(substr($powerData, 4))) / $scaler;
+					$valueData = hexdec($this->Str2Hex(substr($powerData, 4)));
+					
+                    if ($split != "\xFF\xFF" && is_numeric($valueData)) {
+                        $value = $valueData / $scaler;
                     } else {
                         $value = hexdec($this->Str2Hex($split)) - hexdec($this->Str2Hex(substr($powerData, -2)));
                         $value = $value / 10;
@@ -194,10 +196,10 @@ class Haushaltzaehler extends IPSModule
 
                     $index = $this->Str2Hex(substr($indexEnergie, 2, 3));
                     $ident = hexdec($index);
+					$valueData = hexdec($this->Str2Hex(substr($energieData, 4)));
 
-                    $value = hexdec($this->Str2Hex(substr($energieData, 4))) / $scaler;
-
-                    if ($value != 0) {
+                    if ($valueData != 0 && is_numeric($valueData)) {
+						$value = $valueData / $scaler;
                         $this->SetVariableFloat($ident, $index, '~Electricity', $value);
                     }
                 }
@@ -210,7 +212,7 @@ class Haushaltzaehler extends IPSModule
         $this->RegisterVariableFloat($ident, $name, $profile);
         $varUpdated = IPS_GetVariableCompatibility($this->GetIDForIdent($ident));
         if (microtime(true) - $varUpdated['VariableUpdated'] >= $this->ReadPropertyInteger('Update')) {
-            $this->SetValue($ident, number_format($value, 0, ',', ''));
+            $this->SetValue($ident, number_format($value, 2, ',', ''));
         }
     }
 
