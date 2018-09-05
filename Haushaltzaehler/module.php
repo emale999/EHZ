@@ -157,8 +157,8 @@ class Haushaltzaehler extends IPSModule
                     $index = $this->Str2Hex(substr($indexPower, 2, 3));
                     $ident = hexdec($index);
                     $split = substr($powerData, 4, -2);
-					$valueData = hexdec($this->Str2Hex(substr($powerData, 4)));
-					
+                    $valueData = hexdec($this->Str2Hex(substr($powerData, 4)));
+
                     if ($split != "\xFF\xFF" && is_numeric($valueData)) {
                         $value = $valueData / $scaler;
                     } else {
@@ -196,10 +196,10 @@ class Haushaltzaehler extends IPSModule
 
                     $index = $this->Str2Hex(substr($indexEnergie, 2, 3));
                     $ident = hexdec($index);
-					$valueData = hexdec($this->Str2Hex(substr($energieData, 4)));
+                    $valueData = hexdec($this->Str2Hex(substr($energieData, 4)));
 
                     if ($valueData != 0 && is_numeric($valueData)) {
-						$value = $valueData / $scaler;
+                        $value = $valueData / $scaler;
                         $this->SetVariableFloat($ident, $index, '~Electricity', $value);
                     }
                 }
