@@ -135,7 +135,7 @@ class Haushaltzaehler extends IPSModule
         $scaler = '';
 
         foreach ($sml as $data) {
-            if (strpos($data, "\x1B\x52") !== false) {
+            if (strpos($data, "\x62\x1B\x52") !== false) {
                 $powerData = stristr($data, chr(0x1B));
                 $indexPower = stristr($data, chr(0x1B), true);
 
@@ -169,7 +169,7 @@ class Haushaltzaehler extends IPSModule
                 }
             }
 
-            if (strpos($data, "\x1E\x52") !== false) {
+            if (strpos($data, "\x62\x1E\x52") !== false) {
                 $energieData = stristr($data, chr(0x1E));
                 $indexEnergie = stristr($data, chr(0x1E), true);
 
