@@ -135,6 +135,7 @@ class Haushaltzaehler extends IPSModule
         $scaler = '';
 
         foreach ($sml as $data) {
+          $this->SendDebug('Data Log ', $data, 1);
             if (strpos($data, "\x62\x1B\x52") !== false) {
                 $powerData = stristr($data, chr(0x1B));
                 $indexPower = stristr($data, chr(0x1B), true);
