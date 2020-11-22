@@ -170,13 +170,13 @@ class Haushaltzaehler extends IPSModule
         }
     }
 
-    private function Str2Hex($daten)
-    {
+    private function Str2Hex($daten) {
         $hex = '';
+        $stripped='';
         for ($i = 0; $i < strlen($daten); $i++) {
             $hex .= sprintf('%02X ', ord($daten[$i]));
+            }
+        $stripped = str_replace(' ', '', $hex);
+        return $stripped;
         }
-
-        return $hex;
-    }
 }
