@@ -164,8 +164,7 @@ class Haushaltzaehler extends IPSModule
 
     private function SetVariableFloat($ident, $name, $profile, $value)
     {
-        $this->SendDebug('Test SML ', "OBIS ".$name, 1);
-        $this->SendDebug('Test SML ', "Nur erlaubt: ".$this->SendDebug('Test SML ', "OBIS ".$name, 1), 1);
+        $this->SendDebug($name, "OBIS ".$name, 1);
         if ($this->ReadPropertyString('OBIS') != "" && in_array($name, explode(",", $this->ReadPropertyString('OBIS')))) {
             $this->RegisterVariableFloat($ident, $name, $profile);
             $varUpdated = IPS_GetVariable($this->GetIDForIdent($ident));
