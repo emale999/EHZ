@@ -10,7 +10,7 @@
                 { "label": "Serial Port", "value": 1 }
 			]
 	},
-  { "type": "Label", "label": "Nur folgende OBIS-Kennzahlen speichern" },
-  { "type": "ValidationTextBox", "name": "OBIS", "caption": "z.B. 020800,010801 (Bezeichnung aus IPSymcon, Komma-getrennt, ohne Leerzeichen):", "suffix": "" }
+  { "type": "Label", "label": "Nur folgende OBIS-Kennzahlen speichern (Bezeichnung aus IPSymcon, Komma-getrennt, ohne Leerzeichen)" },
+  { "type": "ValidationTextBox", "name": "OBIS", "caption": "z.B. 020800,010801", "suffix": "" }
   ]
 }
