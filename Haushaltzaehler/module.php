@@ -22,7 +22,7 @@ class Haushaltzaehler extends IPSModule
 
         $this->RegisterPropertyInteger('Gateway', 0);
         $this->RegisterPropertyInteger('Update', 1);
-        $this->RegisterPropertyInteger('OBIS', '');
+        $this->RegisterPropertyString('OBIS', '');
     }
 
     public function ApplyChanges()
