@@ -9,6 +9,8 @@
                 { "label": "Client Socket", "value": 0 },
                 { "label": "Serial Port", "value": 1 }
 			]
-	}
+	},
+  { "type": "Label", "label": "Nur folgende OBIS-Kennzahlen speichern (Komma-getrennt)" },
+  { "type": "ValidationTextBox", "name": "OBIS", "caption": "OBIS-Kennzahlen (Komma-Getrennt):", "suffix": "" }
   ]
 }
